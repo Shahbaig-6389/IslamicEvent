@@ -1,0 +1,140 @@
+# Deploy — skeleton
+#
+# Runs ONLY on push to main (or manual dispatch), and ONLY after the full CI
+# suite (lint, typecheck, unit tests, build, E2E) has passed — the `tests`
+# job below reuses .github/workflows/ci.yml via workflow_call.
+#
+# Nothing here is configured yet: fill in your hosting providers and store
+# every credential in GitHub Secrets (Settings → Secrets and variables →
+# Actions). NEVER hardcode tokens, keys, or database URLs in this file.
+
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-main
+  cancel-in-progress: false
+
+# Read secrets once; empty strings let each job below skip itself instead of
+# crashing CLI tools with e.g. `--token=` (GitHub's `if` can read workflow-level env).
+env:
+  VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+
+jobs:
+  # ── Gate: full CI suite (unit + e2e) must be green before deploying ────────
+  tests:
+    uses: ./.github/workflows/ci.yml
+
+  # ── API (Express + Prisma) ─────────────────────────────────────────────────
+  # Pick ONE provider below, add its secrets, and uncomment its steps.
+  # Skips cleanly while DATABASE_URL is not configured yet.
+  deploy-api:
+    name: Deploy API
+    needs: tests
+    runs-on: ubuntu-latest
+    environment: production # optional: add environment protection rules in GitHub
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      # Direct (non-pooler) URL for Prisma CLI. Falls back to DATABASE_URL when
+      # the repo has no pooler (e.g. plain Postgres).
+      DATABASE_URL_UNPOOLED: ${{ secrets.DATABASE_URL_UNPOOLED || secrets.DATABASE_URL }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm ci
+
+      # ── Database schema on every deploy ──────────────────────────────────
+      # Migrations are committed (apps/api/prisma/migrations/) — production
+      # deploys apply them with `prisma migrate deploy`. Kept behind the same
+      # "only when DATABASE_URL is configured" guard so the skeleton skips
+      # cleanly on unconfigured repos.
+      - name: Apply database migrations
+        if: ${{ env.DATABASE_URL != '' }}
+        run: npx prisma migrate deploy --schema apps/api/prisma/schema.prisma
+
+      # ── Option A: Render ─────────────────────────────────────────────────
+      # Secrets needed: RENDER_API_KEY, RENDER_SERVICE_ID
+      # - name: Deploy to Render
+      #   run: |
+      #     curl -sf -X POST "https://api.render.com/v1/services/${{ secrets.RENDER_SERVICE_ID }}/deploys" \
+      #       -H "Authorization: Bearer ${{ secrets.RENDER_API_KEY }}" \
+      #       -H "Content-Type: application/json" \
+      #       -d "{\"clear_cache\": false}"
+
+      # ── Option B: Railway ────────────────────────────────────────────────
+      # Secrets needed: RAILWAY_TOKEN (+ RAILWAY_SERVICE_ID if using --service)
+      # - name: Deploy to Railway
+      #   run: |
+      #     npm install -g @railway/cli
+      #     railway up --service "${{ secrets.RAILWAY_SERVICE_ID }}" --detach
+
+      # ── Option C: Fly.io ─────────────────────────────────────────────────
+      # Secrets needed: FLY_API_TOKEN
+      # - name: Deploy to Fly.io
+      #   uses: superfly/flyctl-actions/setup-flyctl@master
+      # - name: Run flyctl deploy
+      #   run: flyctl deploy --remote-only --app "${{ secrets.FLY_APP_NAME }}"
+      #   env:
+      #     FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+
+      - name: Placeholder (no provider configured)
+        run: echo "Pick Render/Railway/Fly.io above and add the matching GitHub Secrets."
+
+  # ── Web (Next.js) ─────────────────────────────────────────────────────────
+  # Vercel is the default. NEXT_PUBLIC_* variables must be set in the Vercel
+  # project settings (they are inlined at build time), not only as runtime env.
+  # NOTE: job-level `if` cannot use the `env` context (that made this whole
+  # workflow fail validation with 0 jobs), so the skip check lives in a
+  # step-level condition below — steps skip themselves while VERCEL_TOKEN /
+  # VERCEL_ORG_ID / VERCEL_PROJECT_ID are not configured yet.
+  deploy-web:
+    name: Deploy Web
+    needs: tests
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Skip notice (no Vercel secrets configured)
+        if: ${{ env.VERCEL_TOKEN == '' }}
+        run: echo "VERCEL_TOKEN not configured — skipping web deploy. Add Vercel secrets to enable."
+
+      - uses: actions/setup-node@v4
+        if: ${{ env.VERCEL_TOKEN != '' }}
+        with:
+          node-version: 20
+
+      - name: Install Vercel CLI
+        if: ${{ env.VERCEL_TOKEN != '' }}
+        run: npm install -g vercel
+
+      # Secrets needed: VERCEL_TOKEN, VERCEL_ORG_ID, VERCEL_PROJECT_ID
+      - name: Pull Vercel environment
+        if: ${{ env.VERCEL_TOKEN != '' }}
+        run: vercel pull --yes --environment=production --token "$VERCEL_TOKEN"
+        env:
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
+      - name: Build
+        if: ${{ env.VERCEL_TOKEN != '' }}
+        run: vercel build --prod --token "$VERCEL_TOKEN"
+        env:
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
+      - name: Deploy to production
+        if: ${{ env.VERCEL_TOKEN != '' }}
+        run: vercel deploy --prebuilt --prod --token "$VERCEL_TOKEN"
+        env:
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
