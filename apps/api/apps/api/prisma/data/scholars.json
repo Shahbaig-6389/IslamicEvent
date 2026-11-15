@@ -1,0 +1,750 @@
+{
+  "title": "Islamic Scholars (Sunni & Shia)",
+  "scholars": [
+    {
+      "sourceId": "sunni-0001",
+      "slug": "imam-abu-hanifa",
+      "name": "Imam Abu Hanifa",
+      "nameUrdu": "",
+      "honorific": "Imam",
+      "sect": "SUNNI",
+      "category": "SCHOLAR",
+      "status": "DECEASED",
+      "birthDate": "699",
+      "deathDate": "767",
+      "city": "Baghdad",
+      "country": "Iraq",
+      "bio": "Founder of the Hanafi school of Sunni jurisprudence, born in Kufa.",
+      "education": null,
+      "works": [
+        "Al-Fiqh al-Akbar (attributed)"
+      ],
+      "officialLinks": null,
+      "photoUrl": null,
+      "photoCredit": null,
+      "photoLicense": null,
+      "sources": [
+        {
+          "title": "Wikipedia",
+          "url": "https://en.wikipedia.org/wiki/Abu_Hanifa"
+        }
+      ],
+      "confidence": "UNVERIFIED",
+      "lastVerified": null,
+      "isPublished": true
+    },
+    {
+      "sourceId": "sunni-0002",
+      "slug": "imam-malik",
+      "name": "Imam Malik ibn Anas",
+      "nameUrdu": "",
+      "honorific": "Imam",
+      "sect": "SUNNI",
+      "category": "SCHOLAR",
+      "status": "DECEASED",
+      "birthDate": "c. 711",
+      "deathDate": "795",
+      "city": "Medina",
+      "country": "Saudi Arabia",
+      "bio": "Founder of the Maliki school; compiled the Muwatta.",
+      "education": null,
+      "works": [
+        "Al-Muwatta"
+      ],
+      "officialLinks": null,
+      "photoUrl": null,
+      "photoCredit": null,
+      "photoLicense": null,
+      "sources": [
+        {
+          "title": "Wikipedia",
+          "url": "https://en.wikipedia.org/wiki/Malik_ibn_Anas"
+        }
+      ],
+      "confidence": "UNVERIFIED",
+      "lastVerified": null,
+      "isPublished": true
+    },
+    {
+      "sourceId": "sunni-0003",
+      "slug": "imam-shafii",
+      "name": "Imam al-Shafi'i",
+      "nameUrdu": "",
+      "honorific": "Imam",
+      "sect": "SUNNI",
+      "category": "SCHOLAR",
+      "status": "DECEASED",
+      "birthDate": "767",
+      "deathDate": "820",
+      "city": "Cairo",
+      "country": "Egypt",
+      "bio": "Founder of the Shafi'i school; wrote foundational works on legal theory.",
+      "education": null,
+      "works": [
+        "Al-Risala",
+        "Kitab al-Umm"
+      ],
+      "officialLinks": null,
+      "photoUrl": null,
+      "photoCredit": null,
+      "photoLicense": null,
+      "sources": [
+        {
+          "title": "Wikipedia",
+          "url": "https://en.wikipedia.org/wiki/Al-Shafi%CA%BDi"
+        }
+      ],
+      "confidence": "UNVERIFIED",
+      "lastVerified": null,
+      "isPublished": true
+    },
+    {
+      "sourceId": "sunni-0004",
+      "slug": "imam-ahmad-ibn-hanbal",
+      "name": "Imam Ahmad ibn Hanbal",
+      "nameUrdu": "",
+      "honorific": "Imam",
+      "sect": "SUNNI",
+      "category": "SCHOLAR",
+      "status": "DECEASED",
+      "birthDate": "780",
+      "deathDate": "855",
+      "city": "Baghdad",
+      "country": "Iraq",
+      "bio": "Founder of the Hanbali school and hadith scholar.",
+      "education": null,
+      "works": [
+        "Musnad Ahmad"
+      ],
+      "officialLinks": null,
+      "photoUrl": null,
+      "photoCredit": null,
+      "photoLicense": null,
+      "sources": [
+        {
+          "title": "Wikipedia",
+          "url": "https://en.wikipedia.org/wiki/Ahmad_ibn_Hanbal"
+        }
+      ],
+      "confidence": "UNVERIFIED",
+      "lastVerified": null,
+      "isPublished": true
+    },
+    {
+      "sourceId": "sunni-0005",
+      "slug": "imam-bukhari",
+      "name": "Imam al-Bukhari",
+      "nameUrdu": "",
+      "honorific": "Imam",
+      "sect": "SUNNI",
+      "category": "SCHOLAR",
+      "status": "DECEASED",
+      "birthDate": "810",
+      "deathDate": "870",
+      "city": "Samarkand",
+      "country": "Uzbekistan",
+      "bio": "Hadith scholar born in Bukhara; compiler of Sahih al-Bukhari.",
+      "education": null,
+      "works": [
+        "Sahih al-Bukhari"
+      ],
+      "officialLinks": null,
+      "photoUrl": null,
+      "photoCredit": null,
+      "photoLicense": null,
+      "sources": [
+        {
+          "title": "Wikipedia",
+          "url": "https://en.wikipedia.org/wiki/Muhammad_al-Bukhari"
+        }
+      ],
+      "confidence": "UNVERIFIED",
+      "lastVerified": null,
+      "isPublished": true
+    },
+    {
+      "sourceId": "sunni-0006",
+      "slug": "imam-muslim",
+      "name": "Imam Muslim ibn al-Hajjaj",
+      "nameUrdu": "",
+      "honorific": "Imam",
+      "sect": "SUNNI",
+      "category": "SCHOLAR",
+      "status": "DECEASED",
+      "birthDate": "c. 815",
+      "deathDate": "875",
+      "city": "Nishapur",
+      "country": "Iran",
+      "bio": "Hadith scholar, compiler of Sahih Muslim.",
+      "education": null,
+      "works": [
+        "Sahih Muslim"
+      ],
+      "officialLinks": null,
+      "photoUrl": null,
+      "photoCredit": null,
+      "photoLicense": null,
+      "sources": [
+        {
+          "title": "Wikipedia",
+          "url": "https://en.wikipedia.org/wiki/Muslim_ibn_al-Hajjaj"
+        }
+      ],
+      "confidence": "UNVERIFIED",
+      "lastVerified": null,
+      "isPublished": true
+    },
+    {
+      "sourceId": "sunni-0007",
+      "slug": "imam-ghazali",
+      "name": "Imam Abu Hamid al-Ghazali",
+      "nameUrdu": "",
+      "honorific": "Imam",
+      "sect": "SUNNI",
+      "category": "SCHOLAR",
+      "status": "DECEASED",
+      "birthDate": "c. 1058",
+      "deathDate": "1111",
+      "city": "Tus",
+      "country": "Iran",
+      "bio": "Shafi'i jurist, theologian and Sufi thinker.",
+      "education": null,
+      "works": [
+        "Ihya Ulum al-Din",
+        "Tahafut al-Falasifa"
+      ],
+      "officialLinks": null,
+      "photoUrl": null,
+      "photoCredit": null,
+      "photoLicense": null,
+      "sources": [
+        {
+          "title": "Wikipedia",
+          "url": "https://en.wikipedia.org/wiki/Al-Ghazali"
+        }
+      ],
+      "confidence": "UNVERIFIED",
+      "lastVerified": null,
+      "isPublished": true
+    },
+    {
+      "sourceId": "sunni-0008",
+      "slug": "ibn-taymiyyah",
+      "name": "Ibn Taymiyyah",
+      "nameUrdu": "",
+      "honorific": "Sheikh al-Islam",
+      "sect": "SUNNI",
+      "category": "SCHOLAR",
+      "status": "DECEASED",
+      "birthDate": "1263",
+      "deathDate": "1328",
+      "city": "Damascus",
+      "country": "Syria",
+      "bio": "Hanbali theologian and jurist, born in Harran.",
+      "education": null,
+      "works": [
+        "Majmu' al-Fatawa"
+      ],
+      "officialLinks": null,
+      "photoUrl": null,
+      "photoCredit": null,
+      "photoLicense": null,
+      "sources": [
+        {
+          "title": "Wikipedia",
+          "url": "https://en.wikipedia.org/wiki/Ibn_Taymiyyah"
+        }
+      ],
+      "confidence": "UNVERIFIED",
+      "lastVerified": null,
+      "isPublished": true
+    },
+    {
+      "sourceId": "sunni-0009",
+      "slug": "ahmad-raza-khan",
+      "name": "Imam Ahmad Raza Khan Barelvi",
+      "nameUrdu": "",
+      "honorific": "Ala Hazrat",
+      "sect": "SUNNI",
+      "category": "SCHOLAR",
+      "status": "DECEASED",
+      "birthDate": "1856",
+      "deathDate": "1921",
+      "city": "Bareilly",
+      "country": "India",
+      "bio": "Hanafi scholar and Sufi, key figure of the Barelvi movement in South Asia.",
+      "education": null,
+      "works": [
+        "Kanz al-Iman",
+        "Fatawa-e-Razaviyya"
+      ],
+      "officialLinks": null,
+      "photoUrl": null,
+      "photoCredit": null,
+      "photoLicense": null,
+      "sources": [
+        {
+          "title": "Wikipedia",
+          "url": "https://en.wikipedia.org/wiki/Ahmed_Raza_Khan_Barelvi"
+        }
+      ],
+      "confidence": "UNVERIFIED",
+      "lastVerified": null,
+      "isPublished": true
+    },
+    {
+      "sourceId": "sunni-0010",
+      "slug": "ashraf-ali-thanwi",
+      "name": "Maulana Ashraf Ali Thanwi",
+      "nameUrdu": "",
+      "honorific": "Hakim al-Ummat",
+      "sect": "SUNNI",
+      "category": "SCHOLAR",
+      "status": "DECEASED",
+      "birthDate": "1863",
+      "deathDate": "1943",
+      "city": "Thana Bhawan",
+      "country": "India",
+      "bio": "Deobandi scholar and Sufi, prolific author in Urdu.",
+      "education": null,
+      "works": [
+        "Bahishti Zewar",
+        "Bayan al-Quran"
+      ],
+      "officialLinks": null,
+      "photoUrl": null,
+      "photoCredit": null,
+      "photoLicense": null,
+      "sources": [
+        {
+          "title": "Wikipedia",
+          "url": "https://en.wikipedia.org/wiki/Ashraf_Ali_Thanwi"
+        }
+      ],
+      "confidence": "UNVERIFIED",
+      "lastVerified": null,
+      "isPublished": true
+    },
+    {
+      "sourceId": "sunni-0011",
+      "slug": "abul-ala-maududi",
+      "name": "Syed Abul A'la Maududi",
+      "nameUrdu": "",
+      "honorific": "Syed",
+      "sect": "SUNNI",
+      "category": "SCHOLAR",
+      "status": "DECEASED",
+      "birthDate": "1903",
+      "deathDate": "1979",
+      "city": "Lahore",
+      "country": "Pakistan",
+      "bio": "Islamic scholar and founder of Jamaat-e-Islami; author of Tafheem-ul-Quran.",
+      "education": null,
+      "works": [
+        "Tafheem-ul-Quran"
+      ],
+      "officialLinks": null,
+      "photoUrl": null,
+      "photoCredit": null,
+      "photoLicense": null,
+      "sources": [
+        {
+          "title": "Wikipedia",
+          "url": "https://en.wikipedia.org/wiki/Abul_A%27la_Maududi"
+        }
+      ],
+      "confidence": "UNVERIFIED",
+      "lastVerified": null,
+      "isPublished": true
+    },
+    {
+      "sourceId": "sunni-0012",
+      "slug": "abul-hasan-ali-nadwi",
+      "name": "Maulana Syed Abul Hasan Ali Nadwi",
+      "nameUrdu": "",
+      "honorific": "Syed",
+      "sect": "SUNNI",
+      "category": "SCHOLAR",
+      "status": "DECEASED",
+      "birthDate": "1914",
+      "deathDate": "1999",
+      "city": "Rae Bareli",
+      "country": "India",
+      "bio": "Indian Islamic scholar associated with Nadwatul Ulama, Lucknow.",
+      "education": null,
+      "works": [
+        "Islam and the World"
+      ],
+      "officialLinks": null,
+      "photoUrl": null,
+      "photoCredit": null,
+      "photoLicense": null,
+      "sources": [
+        {
+          "title": "Wikipedia",
+          "url": "https://en.wikipedia.org/wiki/Abul_Hasan_Ali_Hasani_Nadwi"
+        }
+      ],
+      "confidence": "UNVERIFIED",
+      "lastVerified": null,
+      "isPublished": true
+    },
+    {
+      "sourceId": "sunni-0013",
+      "slug": "mufti-muhammad-shafi",
+      "name": "Mufti Muhammad Shafi",
+      "nameUrdu": "",
+      "honorific": "Mufti",
+      "sect": "SUNNI",
+      "category": "SCHOLAR",
+      "status": "DECEASED",
+      "birthDate": "1897",
+      "deathDate": "1976",
+      "city": "Karachi",
+      "country": "Pakistan",
+      "bio": "Deobandi Grand Mufti of Pakistan and founder of Darul Uloom Karachi; author of Ma'ariful Quran.",
+      "education": null,
+      "works": [
+        "Ma'ariful Quran"
+      ],
+      "officialLinks": null,
+      "photoUrl": null,
+      "photoCredit": null,
+      "photoLicense": null,
+      "sources": [
+        {
+          "title": "Wikipedia",
+          "url": "https://en.wikipedia.org/wiki/Muhammad_Shafi_Deobandi"
+        }
+      ],
+      "confidence": "UNVERIFIED",
+      "lastVerified": null,
+      "isPublished": true
+    },
+    {
+      "sourceId": "sunni-0014",
+      "slug": "dr-israr-ahmed",
+      "name": "Dr. Israr Ahmed",
+      "nameUrdu": "",
+      "honorific": "Dr.",
+      "sect": "SUNNI",
+      "category": "SCHOLAR",
+      "status": "DECEASED",
+      "birthDate": "1932",
+      "deathDate": "2010",
+      "city": "Lahore",
+      "country": "Pakistan",
+      "bio": "Pakistani Islamic scholar and Quran teacher; founded Tanzeem-e-Islami.",
+      "education": null,
+      "works": [],
+      "officialLinks": null,
+      "photoUrl": null,
+      "photoCredit": null,
+      "photoLicense": null,
+      "sources": [
+        {
+          "title": "Wikipedia",
+          "url": "https://en.wikipedia.org/wiki/Israr_Ahmed"
+        }
+      ],
+      "confidence": "UNVERIFIED",
+      "lastVerified": null,
+      "isPublished": true
+    },
+    {
+      "sourceId": "sunni-0015",
+      "slug": "pir-meher-ali-shah",
+      "name": "Pir Meher Ali Shah",
+      "nameUrdu": "",
+      "honorific": "Pir",
+      "sect": "SUNNI",
+      "category": "SCHOLAR",
+      "status": "DECEASED",
+      "birthDate": "1859",
+      "deathDate": "1937",
+      "city": "Golra Sharif",
+      "country": "Pakistan",
+      "bio": "Chishti Sufi saint and scholar of Golra Sharif, Islamabad.",
+      "education": null,
+      "works": [],
+      "officialLinks": null,
+      "photoUrl": null,
+      "photoCredit": null,
+      "photoLicense": null,
+      "sources": [
+        {
+          "title": "Wikipedia",
+          "url": "https://en.wikipedia.org/wiki/Pir_Meher_Ali_Shah"
+        }
+      ],
+      "confidence": "UNVERIFIED",
+      "lastVerified": null,
+      "isPublished": true
+    },
+    {
+      "sourceId": "sunni-0016",
+      "slug": "imam-tirmidhi",
+      "name": "Imam al-Tirmidhi",
+      "nameUrdu": "",
+      "honorific": "Imam",
+      "sect": "SUNNI",
+      "category": "SCHOLAR",
+      "status": "DECEASED",
+      "birthDate": "824",
+      "deathDate": "892",
+      "city": "Termez",
+      "country": "Uzbekistan",
+      "bio": "Hadith scholar, compiler of Jami' al-Tirmidhi.",
+      "education": null,
+      "works": [
+        "Jami' al-Tirmidhi"
+      ],
+      "officialLinks": null,
+      "photoUrl": null,
+      "photoCredit": null,
+      "photoLicense": null,
+      "sources": [
+        {
+          "title": "Wikipedia search",
+          "url": "https://en.wikipedia.org/wiki/Special:Search?search=Imam%20al-Tirmidhi"
+        }
+      ],
+      "confidence": "UNVERIFIED",
+      "lastVerified": null,
+      "isPublished": true
+    },
+    {
+      "sourceId": "sunni-0017",
+      "slug": "imam-abu-dawud",
+      "name": "Imam Abu Dawud",
+      "nameUrdu": "",
+      "honorific": "Imam",
+      "sect": "SUNNI",
+      "category": "SCHOLAR",
+      "status": "DECEASED",
+      "birthDate": "817",
+      "deathDate": "889",
+      "city": "Basra",
+      "country": "Iraq",
+      "bio": "Hadith scholar, compiler of Sunan Abi Dawud.",
+      "education": null,
+      "works": [
+        "Sunan Abi Dawud"
+      ],
+      "officialLinks": null,
+      "photoUrl": null,
+      "photoCredit": null,
+      "photoLicense": null,
+      "sources": [
+        {
+          "title": "Wikipedia search",
+          "url": "https://en.wikipedia.org/wiki/Special:Search?search=Imam%20Abu%20Dawud"
+        }
+      ],
+      "confidence": "UNVERIFIED",
+      "lastVerified": null,
+      "isPublished": true
+    },
+    {
+      "sourceId": "sunni-0018",
+      "slug": "imam-nasai",
+      "name": "Imam al-Nasa'i",
+      "nameUrdu": "",
+      "honorific": "Imam",
+      "sect": "SUNNI",
+      "category": "SCHOLAR",
+      "status": "DECEASED",
+      "birthDate": "c. 829",
+      "deathDate": "915",
+      "city": "Ramla",
+      "country": "Palestine",
+      "bio": "Hadith scholar, compiler of Sunan al-Nasa'i.",
+      "education": null,
+      "works": [
+        "Sunan al-Nasa'i"
+      ],
+      "officialLinks": null,
+      "photoUrl": null,
+      "photoCredit": null,
+      "photoLicense": null,
+      "sources": [
+        {
+          "title": "Wikipedia search",
+          "url": "https://en.wikipedia.org/wiki/Special:Search?search=Imam%20al-Nasa%27i"
+        }
+      ],
+      "confidence": "UNVERIFIED",
+      "lastVerified": null,
+      "isPublished": true
+    },
+    {
+      "sourceId": "sunni-0019",
+      "slug": "imam-ibn-majah",
+      "name": "Imam Ibn Majah",
+      "nameUrdu": "",
+      "honorific": "Imam",
+      "sect": "SUNNI",
+      "category": "SCHOLAR",
+      "status": "DECEASED",
+      "birthDate": "824",
+      "deathDate": "887",
+      "city": "Qazvin",
+      "country": "Iran",
+      "bio": "Hadith scholar, compiler of Sunan Ibn Majah.",
+      "education": null,
+      "works": [
+        "Sunan Ibn Majah"
+      ],
+      "officialLinks": null,
+      "photoUrl": null,
+      "photoCredit": null,
+      "photoLicense": null,
+      "sources": [
+        {
+          "title": "Wikipedia search",
+          "url": "https://en.wikipedia.org/wiki/Special:Search?search=Imam%20Ibn%20Majah"
+        }
+      ],
+      "confidence": "UNVERIFIED",
+      "lastVerified": null,
+      "isPublished": true
+    },
+    {
+      "sourceId": "sunni-0020",
+      "slug": "imam-al-tabari",
+      "name": "Imam al-Tabari",
+      "nameUrdu": "",
+      "honorific": "Imam",
+      "sect": "SUNNI",
+      "category": "SCHOLAR",
+      "status": "DECEASED",
+      "birthDate": "839",
+      "deathDate": "923",
+      "city": "Baghdad",
+      "country": "Iraq",
+      "bio": "Born in Amol; Quran commentator and historian.",
+      "education": null,
+      "works": [
+        "Jami' al-Bayan",
+        "Tarikh al-Rusul wa al-Muluk"
+      ],
+      "officialLinks": null,
+      "photoUrl": null,
+      "photoCredit": null,
+      "photoLicense": null,
+      "sources": [
+        {
+          "title": "Wikipedia search",
+          "url": "https://en.wikipedia.org/wiki/Special:Search?search=Imam%20al-Tabari"
+        }
+      ],
+      "confidence": "UNVERIFIED",
+      "lastVerified": null,
+      "isPublished": true
+    },
+    {
+      "sourceId": "sunni-0021",
+      "slug": "ibn-kathir",
+      "name": "Ibn Kathir",
+      "nameUrdu": "",
+      "honorific": "Hafiz",
+      "sect": "SUNNI",
+      "category": "SCHOLAR",
+      "status": "DECEASED",
+      "birthDate": "1300",
+      "deathDate": "1373",
+      "city": "Damascus",
+      "country": "Syria",
+      "bio": "Shafi'i scholar, Quran commentator and historian.",
+      "education": null,
+      "works": [
+        "Tafsir Ibn Kathir",
+        "Al-Bidaya wa al-Nihaya"
+      ],
+      "officialLinks": null,
+      "photoUrl": null,
+      "photoCredit": null,
+      "photoLicense": null,
+      "sources": [
+        {
+          "title": "Wikipedia search",
+          "url": "https://en.wikipedia.org/wiki/Special:Search?search=Ibn%20Kathir"
+        }
+      ],
+      "confidence": "UNVERIFIED",
+      "lastVerified": null,
+      "isPublished": true
+    },
+    {
+      "sourceId": "sunni-0022",
+      "slug": "imam-nawawi",
+      "name": "Imam al-Nawawi",
+      "nameUrdu": "",
+      "honorific": "Imam",
+      "sect": "SUNNI",
+      "category": "SCHOLAR",
+      "status": "DECEASED",
+      "birthDate": "1233",
+      "deathDate": "1277",
+      "city": "Nawa",
+      "country": "Syria",
+      "bio": "Shafi'i jurist and hadith scholar.",
+      "education": null,
+      "works": [
+        "Riyad al-Salihin",
+        "Forty Hadith"
+      ],
+      "officialLinks": null,
+      "photoUrl": null,
+      "photoCredit": null,
+      "photoLicense": null,
+      "sources": [
+        {
+          "title": "Wikipedia search",
+          "url": "https://en.wikipedia.org/wiki/Special:Search?search=Imam%20al-Nawawi"
+        }
+      ],
+      "confidence": "UNVERIFIED",
+      "lastVerified": null,
+      "isPublished": true
+    },
+    {
+      "sourceId": "sunni-0023",
+      "slug": "ibn-hajar-asqalani",
+      "name": "Ibn Hajar al-Asqalani",
+      "nameUrdu": "",
+      "honorific": "Hafiz",
+      "sect": "SUNNI",
+      "category": "SCHOLAR",
+      "status": "DECEASED",
+      "birthDate": "1372",
+      "deathDate": "1449",
+      "city": "Cairo",
+      "country": "Egypt",
+      "bio": "Shafi'i hadith scholar, author of Fath al-Bari.",
+      "education": null,
+      "works": [
+        "Fath al-Bari"
+      ],
+      "officialLinks": null,
+      "photoUrl": null,
+      "photoCredit": null,
+      "photoLicense": null,
+      "sources": [
+        {
+          "title": "Wikipedia search",
+          "url": "https://en.wikipedia.org/wiki/Special:Search?search=Ibn%20Hajar%20al-Asqalani"
+        }
+      ],
+      "confidence": "UNVERIFIED",
+      "lastVerified": null,
+      "isPublished": true
+    },
+    {
+      "sourceId": "sunni-0024",
+      "slug": "jalaluddin-suyuti",
+      "name": "Jalal al-Din al-Suyuti",
+      "nameUrdu": "",
+      "honorific": "Imam",
+      "sect": "SUNNI",
+      
