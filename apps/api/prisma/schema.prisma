@@ -1,0 +1,796 @@
+// ─────────────────────────────────────────────────────────────────────────────
+// Prisma Schema — Community Events Platform
+// ─────────────────────────────────────────────────────────────────────────────
+
+generator client {
+  provider = "prisma-client-js"
+  // `native` keeps local dev/CI on the host platform; the rhel target is the
+  // engine AWS Lambda / Vercel functions run (Amazon Linux 2023, OpenSSL 3).
+  binaryTargets = ["native", "rhel-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  // Neon: `url` is the pooled (-pooler) connection used by the running API;
+  // `directUrl` is the unpooled connection Prisma CLI (db push/migrate) needs.
+  // Locally both may point at the same Postgres (see .env.example).
+  url       = env("DATABASE_URL")
+  directUrl = env("DATABASE_URL_UNPOOLED")
+}
+
+// ─── Enums ───────────────────────────────────────────────────────────────────
+
+enum UserRole {
+  USER
+  ORGANIZER
+  ADMIN // legacy — treated as SUPER_ADMIN in code (deprecated)
+  SUPER_ADMIN
+}
+
+// Role of a user within an organization (OrganizationMember)
+enum OrgRole {
+  OWNER
+  ADMIN
+  EDITOR
+}
+
+// Moderation state for user-submitted directory content.
+// Existing seeded rows default to APPROVED so they stay public.
+enum ApprovalStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum EventStatus {
+  DRAFT
+  PENDING_REVIEW
+  APPROVED
+  REJECTED
+  CANCELLED
+  COMPLETED
+}
+
+enum ParticipantRole {
+  KHATEEB
+  ZAKIR
+  SPEAKER
+  NAAT_KHAWAN
+  QARI
+  RECITER
+  HOST
+  GUEST
+  SCHOLAR
+  ORGANIZER
+  MUAZZIN
+  OTHER
+}
+
+enum ReportReason {
+  FAKE_INFORMATION
+  WRONG_LOCATION
+  WRONG_DATE
+  DUPLICATE
+  SPAM
+  OFFENSIVE_CONTENT
+  EVENT_CANCELLED
+  OTHER
+}
+
+enum ReportStatus {
+  PENDING
+  REVIEWED
+  DISMISSED
+  ACTION_TAKEN
+}
+
+// ─── User ─────────────────────────────────────────────────────────────────────
+
+model User {
+  id                  String    @id @default(cuid())
+  name                String
+  email               String    @unique
+  passwordHash        String
+  phone               String?
+  profileImage        String?
+  role                UserRole  @default(USER)
+  isActive            Boolean   @default(true)
+  emailVerifiedAt     DateTime?
+  failedLoginAttempts Int       @default(0)
+  lockedUntil         DateTime?
+  verificationToken   String?   @unique
+  verificationExpires DateTime?
+  resetToken          String?   @unique
+  resetExpires        DateTime?
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+
+  events         Event[]         @relation("EventCreator")
+  organizers     Organizer[]     @relation("OrganizerCreator")
+  savedEvents    SavedEvent[]
+  reports        EventReport[]
+  notifications  Notification[]
+  eventRsvps     EventRsvp[]
+  organizationMemberships OrganizationMember[]
+
+  @@map("users")
+}
+
+// ─── Category ─────────────────────────────────────────────────────────────────
+
+model Category {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  slug        String   @unique
+  description String?
+  icon        String?
+  isActive    Boolean  @default(true)
+  sortOrder   Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  events Event[]
+
+  @@map("categories")
+}
+
+// ─── Location ─────────────────────────────────────────────────────────────────
+
+model Country {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  code      String   @unique  // ISO 3166-1 alpha-2
+  dialCode  String?
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+
+  states     State[]
+  events     Event[]
+  organizers Organizer[]
+
+  @@map("countries")
+}
+
+model State {
+  id        String   @id @default(cuid())
+  name      String
+  code      String?
+  countryId String
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+
+  country Country @relation(fields: [countryId], references: [id])
+  cities  City[]
+  events  Event[]
+
+  @@unique([name, countryId])
+  @@map("states")
+}
+
+model City {
+  id        String   @id @default(cuid())
+  name      String
+  slug      String
+  stateId   String
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+
+  state      State      @relation(fields: [stateId], references: [id])
+  areas      Area[]
+  events     Event[]
+  organizers Organizer[]
+
+  @@unique([slug, stateId])
+  @@map("cities")
+}
+
+model Area {
+  id        String   @id @default(cuid())
+  name      String
+  slug      String
+  cityId    String
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+
+  city   City    @relation(fields: [cityId], references: [id])
+  events Event[]
+
+  @@unique([slug, cityId])
+  @@map("areas")
+}
+
+// ─── Organizer ────────────────────────────────────────────────────────────────
+
+model Organizer {
+  id             String   @id @default(cuid())
+  name           String
+  slug           String   @unique
+  description    String?
+  logoUrl        String?
+  logoPublicId   String?
+  address        String?
+  phone          String?
+  email          String?
+  website        String?
+  isVerified     Boolean  @default(false)
+  isActive       Boolean  @default(true)
+  createdById    String
+  countryId      String?
+  cityId         String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  createdBy User     @relation("OrganizerCreator", fields: [createdById], references: [id])
+  country   Country? @relation(fields: [countryId], references: [id])
+  city      City?    @relation(fields: [cityId], references: [id])
+  events    Event[]
+  members   OrganizationMember[]
+
+  @@map("organizers")
+}
+
+// ─── Organization membership (multi-level roles) ──────────────────────────────
+
+model OrganizationMember {
+  id          String   @id @default(cuid())
+  userId      String
+  organizerId String
+  role        OrgRole  @default(ADMIN)
+  addedById   String?
+  createdAt   DateTime @default(now())
+
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  organizer Organizer @relation(fields: [organizerId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, organizerId])
+  @@index([organizerId])
+  @@map("organization_members")
+}
+
+// ─── Person (Participant profile) ─────────────────────────────────────────────
+
+model Person {
+  id           String   @id @default(cuid())
+  name         String
+  slug         String   @unique
+  profileImage String?
+  description  String?
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  eventParticipants EventParticipant[]
+
+  @@map("people")
+}
+
+// ─── Event ────────────────────────────────────────────────────────────────────
+
+model Event {
+  id              String      @id @default(cuid())
+  slug            String      @unique
+  title           String
+  description     String?
+  categoryId      String
+  createdById     String
+  organizerId     String?
+  date            DateTime    @db.Date
+  startTime       String?
+  endTime         String?
+  countryId       String?
+  stateId         String?
+  cityId          String?
+  areaId          String?
+  venue           String?
+  address         String?
+  latitude        Float?
+  longitude       Float?
+  posterUrl       String?
+  posterPublicId  String?
+  status          EventStatus @default(PENDING_REVIEW)
+  rejectionReason String?
+  reviewedById    String?
+  reviewedAt      DateTime?
+  isFeatured      Boolean     @default(false)
+  viewCount       Int         @default(0)
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+  publishedAt     DateTime?
+
+  // Relations
+  category     Category           @relation(fields: [categoryId], references: [id])
+  createdBy    User               @relation("EventCreator", fields: [createdById], references: [id])
+  organizer    Organizer?         @relation(fields: [organizerId], references: [id])
+  country      Country?           @relation(fields: [countryId], references: [id])
+  state        State?             @relation(fields: [stateId], references: [id])
+  city         City?              @relation(fields: [cityId], references: [id])
+  area         Area?              @relation(fields: [areaId], references: [id])
+  participants EventParticipant[]
+  savedBy      SavedEvent[]
+  reports      EventReport[]
+  rsvps        EventRsvp[]
+
+  // Indexes
+  @@index([status])
+  @@index([date])
+  @@index([cityId])
+  @@index([categoryId])
+  @@index([organizerId])
+  @@index([createdAt])
+  @@index([slug])
+  @@index([status, date])
+  @@index([cityId, date])
+  @@index([categoryId, date])
+  @@map("events")
+}
+
+// ─── Event Participant ────────────────────────────────────────────────────────
+
+model EventParticipant {
+  id           String          @id @default(cuid())
+  eventId      String
+  personId     String
+  role         ParticipantRole @default(OTHER)
+  displayOrder Int             @default(0)
+  createdAt    DateTime        @default(now())
+
+  event  Event  @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  person Person @relation(fields: [personId], references: [id])
+
+  @@unique([eventId, personId, role])
+  @@map("event_participants")
+}
+
+// ─── Event RSVP (attendance interest) ─────────────────────────────────────────
+
+enum RsvpType {
+  INTERESTED
+  ATTENDING
+}
+
+model EventRsvp {
+  id            String    @id @default(cuid())
+  userId        String
+  eventId       String
+  type          RsvpType
+  checkedInAt   DateTime?
+  reminderSentAt DateTime?
+  createdAt     DateTime  @default(now())
+
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  event Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, eventId])
+  @@map("event_rsvps")
+}
+
+// ─── Saved Event ──────────────────────────────────────────────────────────────
+
+model SavedEvent {
+  id        String   @id @default(cuid())
+  userId    String
+  eventId   String
+  createdAt DateTime @default(now())
+
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  event Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, eventId])
+  @@map("saved_events")
+}
+
+// ─── Event Report ─────────────────────────────────────────────────────────────
+
+model EventReport {
+  id          String       @id @default(cuid())
+  eventId     String
+  userId      String
+  reason      ReportReason
+  description String?
+  status      ReportStatus @default(PENDING)
+  createdAt   DateTime     @default(now())
+  resolvedAt  DateTime?
+
+  event Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("event_reports")
+}
+
+// ─── Free Dastarkhwan (free food points for the poor & needy) ────────────────
+
+model Dastarkhwan {
+  id            String   @id @default(cuid())
+  sourceId      String   @unique
+  name          String
+  city          String
+  area          String?
+  address       String
+  googleMapsUrl String?
+  latitude      Float?
+  longitude     Float?
+  type          String
+  schedule      String?
+  sourceUrl     String?
+  sourceYear    String?
+  verified      Boolean  @default(false)
+  notes         String?
+  isActive      Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  approvalStatus  ApprovalStatus @default(APPROVED)
+  submittedById   String?
+  organizerId     String?
+  reviewedById    String?
+  reviewedAt      DateTime?
+  rejectionReason String?
+
+  @@index([city])
+  @@index([isActive])
+  @@index([approvalStatus])
+  @@index([organizerId])
+  @@map("dastarkhwans")
+}
+
+// ─── Imambargahs / Karbalas (historic & notable Shia sacred sites) ────────────
+
+model Imambargah {
+  id                 String   @id @default(cuid())
+  sourceId           String   @unique
+  name               String
+  city               String
+  area               String?
+  address            String
+  googleMapsUrl      String?
+  latitude           Float?
+  longitude          Float?
+  yearBuilt          String?
+  founderOrCaretaker String?
+  contact            String?
+  notes              String?
+  sourceUrl          String?
+  verified           Boolean  @default(false)
+  confidence         String
+  isActive           Boolean  @default(true)
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  approvalStatus  ApprovalStatus @default(APPROVED)
+  submittedById   String?
+  organizerId     String?
+  reviewedById    String?
+  reviewedAt      DateTime?
+  rejectionReason String?
+
+  @@index([city])
+  @@index([isActive])
+  @@index([approvalStatus])
+  @@index([organizerId])
+  @@map("imambargahs")
+}
+
+// ─── Pakistan places (historical, religious, cultural & natural/tourist) ──────
+
+model Place {
+  id           String   @id @default(cuid())
+  sourceId     String   @unique
+  name         String
+  category     String // Historical | Religious | Cultural | Natural / Tourist
+  type         String
+  city         String
+  province     String
+  address      String
+  mapLink      String?
+  builtYear    String?
+  builtBuilder String?
+  unescoStatus String?
+  timings      String?
+  ticket       String?
+  description  String?
+  sourceLink   String?
+  verified     Boolean  @default(false)
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  approvalStatus  ApprovalStatus @default(APPROVED)
+  submittedById   String?
+  organizerId     String?
+  reviewedById    String?
+  reviewedAt      DateTime?
+  rejectionReason String?
+
+  @@index([category])
+  @@index([city])
+  @@index([province])
+  @@index([isActive])
+  @@index([approvalStatus])
+  @@index([organizerId])
+  @@map("places")
+}
+
+// ─── Darbars (Sufi shrines) of Pakistan ──────────────────────────────────────
+
+model Darbar {
+  id             String   @id @default(cuid())
+  sourceId       String   @unique
+  name           String
+  saint          String
+  saintDeathYear String?
+  ursDate        String?
+  city           String
+  province       String
+  address        String
+  mapLink        String?
+  timings        String?
+  description    String?
+  sourceLink     String?
+  verified       Boolean  @default(false)
+  isActive       Boolean  @default(true)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  approvalStatus  ApprovalStatus @default(APPROVED)
+  submittedById   String?
+  organizerId     String?
+  reviewedById    String?
+  reviewedAt      DateTime?
+  rejectionReason String?
+
+  @@index([city])
+  @@index([province])
+  @@index([isActive])
+  @@index([approvalStatus])
+  @@index([organizerId])
+  @@map("darbars")
+}
+
+// ─── Urs dates (researched schedules for major Sufi shrines) ─────────────────
+
+model UrsDate {
+  id              String   @id @default(cuid())
+  sourceId        String   @unique
+  name            String
+  saint           String
+  saintDeathYear  String?
+  city            String
+  ursRule         String?
+  calendarBasis   String?
+  lastObserved    String?
+  nextExpected    String?
+  confidence      String // high | medium | low | none
+  sources         String?
+  notes           String?
+  howToConfirm    String?
+  researched      Boolean  @default(false)
+  upcomingOrder   Int?
+  isActive        Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  approvalStatus  ApprovalStatus @default(APPROVED)
+  submittedById   String?
+  organizerId     String?
+  reviewedById    String?
+  reviewedAt      DateTime?
+  rejectionReason String?
+
+  @@index([researched])
+  @@index([city])
+  @@index([upcomingOrder])
+  @@index([isActive])
+  @@index([approvalStatus])
+  @@index([organizerId])
+  @@map("urs_dates")
+}
+
+// ─── Muharram / Safar processions (jaloos routes) ─────────────────────────────
+
+model Procession {
+  id              String   @id @default(cuid())
+  sourceId        String   @unique
+  city            String
+  month           String // Muharram | Safar
+  day             String // "9" | "10" | "20" | "1-10" ...
+  kind            String   @default("procession") // procession | road_closure | summary
+  name            String
+  type            String?
+  start           String?
+  end             String?
+  route           String?
+  routeHighlights String?
+  time            String?
+  googleMaps      String?
+  description     String?
+  notes           String?
+  sortOrder       Int      @default(0)
+  isActive        Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  approvalStatus  ApprovalStatus @default(APPROVED)
+  submittedById   String?
+  organizerId     String?
+  reviewedById    String?
+  reviewedAt      DateTime?
+  rejectionReason String?
+
+  @@index([city])
+  @@index([month, day])
+  @@index([kind])
+  @@index([isActive])
+  @@index([approvalStatus])
+  @@index([organizerId])
+  @@map("processions")
+}
+
+// ─── Charity organizations ────────────────────────────────────────────────────
+
+model Charity {
+  id              String   @id @default(cuid())
+  sourceId        String   @unique
+  name            String
+  country         String
+  province        String
+  city            String
+  type            String?
+  focus           String?
+  policyNote      String?
+  address         String?
+  latitude        Float?
+  longitude       Float?
+  googleMapsLink  String?
+  contactNumbers  String?
+  founded         String?
+  founder         String?
+  website         String?
+  registration    String?
+  isActive        Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  approvalStatus  ApprovalStatus @default(APPROVED)
+  submittedById   String?
+  organizerId     String?
+  reviewedById    String?
+  reviewedAt      DateTime?
+  rejectionReason String?
+
+  @@index([country])
+  @@index([province])
+  @@index([city])
+  @@index([isActive])
+  @@index([approvalStatus])
+  @@index([organizerId])
+  @@map("charities")
+}
+
+// ─── Melas (festivals / fairs) of Pakistan ────────────────────────────────────
+
+model Mela {
+  id             String   @id @default(cuid())
+  sourceId       String   @unique
+  name           String
+  type           String?
+  city           String
+  province       String
+  venue          String?
+  address        String?
+  googleMapsUrl  String?
+  latitude       Float?
+  longitude      Float?
+  whenHeld       String?
+  duration       String?
+  history        String?
+  whatHappens    String?
+  statusNotes    String?
+  source         String?
+  verified       Boolean  @default(false)
+  isActive       Boolean  @default(true)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  approvalStatus  ApprovalStatus @default(APPROVED)
+  submittedById   String?
+  organizerId     String?
+  reviewedById    String?
+  reviewedAt      DateTime?
+  rejectionReason String?
+
+  @@index([city])
+  @@index([province])
+  @@index([isActive])
+  @@index([approvalStatus])
+  @@index([organizerId])
+  @@map("melas")
+}
+
+// ─── Punjab Auqaf urs calendar (zone-based shrine schedule) ───────────────────
+
+model AuqafUrsDate {
+  id              String   @id @default(cuid())
+  sourceId        String   @unique
+  name            String
+  type            String?
+  zone            String
+  province        String
+  dateAsPublished String
+  googleMapsUrl   String?
+  latitude        Float?
+  longitude       Float?
+  source          String?
+  verified        Boolean  @default(false)
+  isActive        Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([zone])
+  @@index([isActive])
+  @@map("auqaf_urs_dates")
+}
+
+// ─── Notification ─────────────────────────────────────────────────────────────
+
+model Notification {
+  id        String    @id @default(cuid())
+  userId    String
+  type      String // EVENT_APPROVED | EVENT_REJECTED | EVENT_CANCELLED | NEW_EVENT | SYSTEM
+  title     String
+  body      String?
+  link      String?
+  readAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, readAt])
+  @@index([userId, createdAt])
+  @@map("notifications")
+}
+
+// ─── Scholar ──────────────────────────────────────────────────────────────────
+
+model Scholar {
+  id            String   @id @default(cuid())
+  sourceId      String   @unique
+  slug          String   @unique
+  name          String
+  nameUrdu      String?
+  honorific     String?
+  sect          String // SUNNI | SHIA
+  category      String // SCHOLAR | MARJA | KHATEEB
+  status        String   @default("DECEASED")
+  birthDate     String?
+  deathDate     String?
+  city          String?
+  country       String?
+  bio           String?
+  education     String?
+  works         String[]
+  officialLinks String?
+  photoUrl      String?
+  photoCredit   String?
+  photoLicense  String?
+  sources       Json?
+  confidence    String   @default("UNVERIFIED")
+  lastVerified  String?
+  isActive      Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  approvalStatus  ApprovalStatus @default(APPROVED)
+  submittedById   String?
+  organizerId     String?
+  reviewedById    String?
+  reviewedAt      DateTime?
+  rejectionReason String?
+
+  @@index([sect])
+  @@index([category])
+  @@index([city])
+  @@index([isActive])
+  @@index([approvalStatus])
+  @@index([organizerId])
+  @@map("scholars")
+}
